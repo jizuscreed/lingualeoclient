@@ -108,29 +108,29 @@ class Client {
 
     /**
      * @param Collection $collection
-     * @param int $chunk_offset
-     * @param int $chunk_limit
+     * @param int $chunkOffset
+     * @param int $chunkLimit
      * @return Material[]
      * @throws Exception\ClientException
      */
-    public function getMaterialsFromCollection(Collection $collection, $chunk_offset = 0, $chunk_limit = 0){
+    public function getMaterialsFromCollection(Collection $collection, $chunkOffset = 0, $chunkLimit = 0){
         $this->checkSignUp();
 
         $materials = [];
             // chunk size is 30 items
-            $chunk_id = $chunk_offset;
+            $chunk_id = $chunkOffset;
             $added_chunks = 0;
-            while($added_chunks < $chunk_limit || $added_chunks == 0){
+            while($added_chunks < $chunkLimit || $added_chunks == 0){
                 $chunk_id++;
                 $result = $this->getJsonResponse($collection->find_url.'&chunk='.$chunk_id);
                 // Set chunk limit if selection all
-                if($added_chunks == 0 && $chunk_limit == 0){
-                    $chunk_limit = $result->chunk->total;
+                if($added_chunks == 0 && $chunkLimit == 0){
+                    $chunkLimit = $result->chunk->total;
                 }
                 // Detect end of chunks
                 $added_chunks++;
                 if($result->chunk->current >= $result->chunk->total){
-                    $chunk_limit = $added_chunks;
+                    $chunkLimit = $added_chunks;
                 }
 
                 if(isset($result->content)){
@@ -145,16 +145,16 @@ class Client {
     }
 
     /**
-     * @param $material_id
-     * @param bool $as_pages
+     * @param $materialId
+     * @param bool $asPages
      * @return string[]|string
      */
-    public function getMaterialFullText($material_id, $as_pages = false){
+    public function getMaterialFullText($materialId, $asPages = false){
         $this->checkSignUp();
 
-        $result = $this->getJsonResponse('/content/'.$material_id.'/page/all?port=3');
+        $result = $this->getJsonResponse('/content/'.$materialId.'/page/all?port=3');
 
-        if($as_pages){
+        if($asPages){
             // return array of pages
             $pages = [];
             foreach($result->page as $JSONPage){
@@ -172,21 +172,25 @@ class Client {
     }
 
     /**
-     * @param int $words_offset
-     * @param int $chunk_limit
-     * @return Word[]
+     * Getting chunk of users dictionary
+     * @param int $wordsOffset
+     * @param int $chunkLimit how many chunks we going to grab (0 for whole dictinary). Chunk size is 30
+     * @param bool $onlyWords получать только слова (или и слова и фразы)
+     * @return LinguaLeoContent\Word[]
+     * @throws ClientException
+     * @throws LinguaLeoException
      */
-    public function getDictionary($words_offset = 0, $chunk_limit = 0, $onlyWords = false){
+    public function getDictionary($wordsOffset = 0, $chunkLimit = 0, $onlyWords = false){
         $this->checkSignUp();
-        // проставляем, получать из словаря только слова или ещё и фразы и прочее
+        // проставляем, получать из словаря только слова или ещё и фразы и прочее 
         $port = $onlyWords?3:1;
 
-        $added_words = $words_offset;
+        $added_words = $wordsOffset;
         $added_chunks = 0;
         $result = false;
         $words = [];
 
-        while($added_chunks === 0 || ($result->next_chunk && ($chunk_limit == 0 || $added_chunks < $chunk_limit))){
+        while($added_chunks === 0 || ($result->next_chunk && ($chunkLimit == 0 || $added_chunks < $chunkLimit))){
             $result = $this->getJsonResponse('/Userdict?port='.$port.'&offset='.$added_words);
 
             $added_words += count($result->words);
@@ -220,13 +224,13 @@ class Client {
     
     /**
      * @param $JSONObject
-     * @param $field_name
+     * @param $fieldName
      * @return mixed
      * @throws Exception\ClientException
      */
-    public function getFieldFromJsonObject($JSONObject, $field_name){
-        if(isset($JSONObject->$field_name)){
-            return $JSONObject->$field_name;
+    public function getFieldFromJsonObject($JSONObject, $fieldName){
+        if(isset($JSONObject->$fieldName)){
+            return $JSONObject->$fieldName;
         } else {
             throw new ClientException('No "$field_name" field in json object (Нет поля "$field_name" в json обьекте)');
         }
