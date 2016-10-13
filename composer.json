@@ -1,0 +1,28 @@
+{
+    "name": "jizuscreed/lingualeoclient",
+    "type": "library",
+    "authors": [
+        {
+        "name": "jizuscreed",
+        "email": "jizuscreed@gmail.com"
+        }
+    ],
+    "license": "GPL-3.0+",
+    "version": "1.0.0-stable",
+    "description": "A library for access to LinguaLeo.com content by API from Android-app" ,
+    "keywords": ["LinguaLeo", "api"],
+    "require": {
+        "php": ">=5.4",
+        "guzzlehttp/guzzle": ">=6.0-stable"
+    },
+    "autoload": {
+        "psr-4": {"LinguaLeoClient\\": "src/LinguaLeoClient/"}
+    },
+
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        }
+    }
+}
