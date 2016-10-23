@@ -1,5 +1,5 @@
 # LinguaLeoClient
-A library for access to LinguaLeo.com content by API from Android-app.
+A library for access to **LinguaLeo.com** content by API from Android-app.
 It can:
 - auth by user
 - getting user's dictionary
