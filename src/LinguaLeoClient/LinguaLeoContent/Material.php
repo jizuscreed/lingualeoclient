@@ -4,8 +4,8 @@ namespace LinguaLeoClient\LinguaLeoContent;
 use LinguaLeoClient\Exception\ClientException;
 use LinguaLeoClient\Client;
 
-class Material {
-
+class Material
+{
     public $material_id = false;
     public $title = false;
     public $format = false;
@@ -15,6 +15,12 @@ class Material {
 
     public $client = false;
 
+    /**
+     * Material constructor.
+     * @param $JSONObject
+     * @param Client $client
+     * @throws ClientException
+     */
     public function __construct($JSONObject, Client $client){
         $this->client = $client;
 
@@ -29,9 +35,10 @@ class Material {
 
     /**
      * @return string|\string[]
+     * @throws ClientException
+     * @throws \LinguaLeoClient\Exception\LinguaLeoException
      */
     public function getFullText(){
         return $this->client->getMaterialFullText($this->material_id);
     }
 }
-?>

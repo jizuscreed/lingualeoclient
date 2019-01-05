@@ -4,7 +4,8 @@ namespace LinguaLeoClient\LinguaLeoContent;
 use LinguaLeoClient\Client;
 use LinguaLeoClient\Exception\ClientException;
 
-class Collection {
+class Collection
+{
     // url to get collection contents
     public $find_url = false;
 
@@ -27,4 +28,3 @@ class Collection {
         $this->find_url = str_replace('3version', '3&version', $this->find_url);
     }
 }
-?>

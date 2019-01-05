@@ -11,7 +11,6 @@ use LinguaLeoClient\LinguaLeoContent\Material;
 use LinguaLeoClient\LinguaLeoContent\Word;
 use LinguaLeoClient\LinguaLeoContent\Translation;
 
-
 class Client {
 
     /**
@@ -31,6 +30,13 @@ class Client {
      */
     public $hasNextDictionaryChunk = true;
 
+    /**
+     * Client constructor.
+     * @param $email
+     * @param $password
+     * @throws ClientException
+     * @throws LinguaLeoException
+     */
     public function __construct($email, $password){
         $this->createHttpClient();
         $this->login($email, $password);
@@ -111,7 +117,8 @@ class Client {
      * @param int $chunkOffset
      * @param int $chunkLimit
      * @return Material[]
-     * @throws Exception\ClientException
+     * @throws ClientException
+     * @throws LinguaLeoException
      */
     public function getMaterialsFromCollection(Collection $collection, $chunkOffset = 0, $chunkLimit = 0){
         $this->checkSignUp();
@@ -148,6 +155,8 @@ class Client {
      * @param $materialId
      * @param bool $asPages
      * @return string[]|string
+     * @throws ClientException
+     * @throws LinguaLeoException
      */
     public function getMaterialFullText($materialId, $asPages = false){
         $this->checkSignUp();
@@ -183,21 +192,21 @@ class Client {
     public function getDictionary($wordsOffset = 0, $chunkLimit = 0, $onlyWords = false){
         $this->checkSignUp();
         // проставляем, получать из словаря только слова или ещё и фразы и прочее 
-        $port = $onlyWords?3:1;
+        $port = $onlyWords ? 3 : 1;
 
-        $added_words = $wordsOffset;
-        $added_chunks = 0;
+        $addedWords = $wordsOffset;
+        $addedChunks = 0;
         $result = false;
         $words = [];
 
-        while($added_chunks === 0 || ($result->next_chunk && ($chunkLimit == 0 || $added_chunks < $chunkLimit))){
-            $result = $this->getJsonResponse('/Userdict?port='.$port.'&offset='.$added_words);
+        while($addedChunks === 0 || ($result->next_chunk && ($chunkLimit == 0 || $addedChunks < $chunkLimit))){
+            $result = $this->getJsonResponse('/Userdict?port='.$port.'&offset='.$addedWords);
 
-            $added_words += count($result->words);
+            $addedWords += count($result->words);
             foreach($result->words as $JSONWord){
                 $words[] = new Word($JSONWord, $this);
             }
-            $added_chunks++;
+            $addedChunks++;
         }
 
         // проставляем, есть ли следующий кусок данных
@@ -209,6 +218,8 @@ class Client {
     /**
      * @param string $word
      * @return Translation[]
+     * @throws ClientException
+     * @throws LinguaLeoException
      */
     public function getWordTranslations($word){
         $this->checkSignUp();
@@ -223,14 +234,14 @@ class Client {
     }
     
     /**
-     * @param $JSONObject
+     * @param $JsonObject
      * @param $fieldName
      * @return mixed
      * @throws Exception\ClientException
      */
-    public function getFieldFromJsonObject($JSONObject, $fieldName){
-        if(isset($JSONObject->$fieldName)){
-            return $JSONObject->$fieldName;
+    public function getFieldFromJsonObject($JsonObject, $fieldName){
+        if(isset($JsonObject->$fieldName)){
+            return $JsonObject->$fieldName;
         } else {
             throw new ClientException('No "$field_name" field in json object (Нет поля "$field_name" в json обьекте)');
         }
@@ -245,16 +256,16 @@ class Client {
     private function getJsonResponse($url){
         try {
             $response = $this->httpClient->get($url);
-            $JSONResult = json_decode($response->getBody()->getContents());
+            $JsonResult = json_decode($response->getBody()->getContents());
         } catch(\Exception $e){
             throw new ClientException($e->getMessage(), $e->getCode());
         }
 
-        if(isset($JSONResult->error_msg) && $JSONResult->error_msg != ''){
-            throw new LinguaLeoException($JSONResult->error_msg, $JSONResult->error_code);
+        if(isset($JsonResult->error_msg) && $JsonResult->error_msg != ''){
+            throw new LinguaLeoException($JsonResult->error_msg, $JsonResult->error_code);
         }
 
-        return $JSONResult;
+        return $JsonResult;
     }
 
     /**
@@ -266,5 +277,3 @@ class Client {
         }
     }
 }
-
-?>

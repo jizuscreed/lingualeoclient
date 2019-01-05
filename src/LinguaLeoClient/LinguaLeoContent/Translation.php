@@ -2,7 +2,9 @@
 namespace LinguaLeoClient\LinguaLeoContent;
 
 use LinguaLeoClient\Client;
-class Translation {
+
+class Translation
+{
     public $translation_id = false;
     public $translation = false;
     public $votes = false;
@@ -10,6 +12,7 @@ class Translation {
     /**
      * @param $JSONObject
      * @param Client $client
+     * @throws \LinguaLeoClient\Exception\ClientException
      */
     public function __construct($JSONObject, Client $client){
         $this->translation_id = $client->getFieldFromJsonObject($JSONObject, 'id');
@@ -17,5 +20,3 @@ class Translation {
         $this->votes = $client->getFieldFromJsonObject($JSONObject, 'votes');
     }
 }
-
-?>

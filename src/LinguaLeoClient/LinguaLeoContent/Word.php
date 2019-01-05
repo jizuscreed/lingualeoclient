@@ -2,7 +2,9 @@
 namespace LinguaLeoClient\LinguaLeoContent;
 
 use LinguaLeoClient\Client;
-class Word {
+
+class Word
+{
     const LEARNING_STATE_UNLEARNED = 1023;
     const LEARNING_STATE_LEARNED_PERCENTS_25 = 1019;
     const LEARNING_STATE_LEARNED_PERCENTS_50 = 1017;
@@ -24,6 +26,7 @@ class Word {
     /**
      * @param $JSONObject
      * @param Client $client
+     * @throws \LinguaLeoClient\Exception\ClientException
      */
     public function __construct($JSONObject, Client $client){
         $this->word_id = $client->getFieldFromJsonObject($JSONObject, 'word_id');
@@ -54,5 +57,3 @@ class Word {
         }
     }
 }
-
-?>

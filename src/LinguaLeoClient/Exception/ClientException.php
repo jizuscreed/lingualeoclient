@@ -4,4 +4,3 @@ namespace LinguaLeoClient\Exception;
 class ClientException extends \Exception {
 
 }
-?>
