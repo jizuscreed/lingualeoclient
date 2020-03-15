@@ -85,7 +85,7 @@ class Client {
             $this->signedup = true;
             $this->user = new User($result->user, $this);
         } catch(ClientException $e){
-            // 
+            throw $e;
         }
 
         return $this->user;
@@ -226,8 +226,11 @@ class Client {
 
         $result = $this->getJsonResponse('/Gettranslates?port=3&noauth=1&word='.strtolower($word));
         $translations = [];
-        foreach($result->translate as $translationJSON){
-            $translations[] = new Translation($translationJSON, $this);
+
+        if(isset($result->translate)){ // перевода почему то может и не быть по каким то непонятным причинам
+            foreach($result->translate as $translationJSON){
+                $translations[] = new Translation($translationJSON, $this);
+            }
         }
 
         return $translations;
@@ -243,7 +246,7 @@ class Client {
         if(isset($JsonObject->$fieldName)){
             return $JsonObject->$fieldName;
         } else {
-            throw new ClientException('No "$field_name" field in json object (Нет поля "$field_name" в json обьекте)');
+            throw new ClientException("No \"{$fieldName}\" field in json object (Нет поля \"{$fieldName}\" в json обьекте)");
         }
     }
 

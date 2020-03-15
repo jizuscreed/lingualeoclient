@@ -10,7 +10,6 @@ class User
     public $nickname = false;
     public $avatar_url = false;
     public $fullname = false;
-    public $age = false;
     public $level = false;
     public $is_gold = false;
     public $meatballs = false;
@@ -29,7 +28,6 @@ class User
         $this->nickname = $client->getFieldFromJsonObject($JsonObject, 'nickname');
         $this->avatar_url = $client->getFieldFromJsonObject($JsonObject, 'avatar');
         $this->fullname = $client->getFieldFromJsonObject($JsonObject, 'fullname');
-        $this->age = $client->getFieldFromJsonObject($JsonObject, 'age');
         $this->level = $client->getFieldFromJsonObject($JsonObject, 'xp_level');
         $this->is_gold = $client->getFieldFromJsonObject($JsonObject, 'is_gold');
         $this->meatballs = $client->getFieldFromJsonObject($JsonObject, 'meatballs');
